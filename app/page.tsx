@@ -5,6 +5,7 @@ import Image from "next/image"
 import imageHero from "@/public/img-preview.svg"
 import playButton from "@/public/play-button.svg"
 import { cn } from "@/lib/utils"
+import line from "@/public/line3.svg"
 
 export default function Home() {
   return (
@@ -20,14 +21,32 @@ export default function Home() {
 const Hero = () => {
   return (
     <div className="w-full h-full items-center justify-center flex flex-col pt-5">
-      <h1 className="text-[80px] font-bold font-grostekBold -tracking-[1px] capitalize mb-2">
+      <h1
+        className="text-[80px] font-bold font-grostekBold -tracking-[1px] capitalize mb-2 relative selection:bg-transparent"
+        data-aos="fade-up"
+        data-aos-delay="50"
+      >
         bisa ujian
+        <Image
+          alt="svg line"
+          src={line}
+          className="w-56 -right-6 absolute top-4"
+        />
       </h1>
-      <p className="text-muted-foreground mb-16">
+      <p
+        className="text-muted-foreground mb-16"
+        data-aos="fade-up"
+        data-aos-delay="100"
+      >
         Sebuah flatform yang di gunakan untuk mempermudah siswa/i dalam
         melakukan ujian.
       </p>
-      <Button size="lg" className="gap-2 capitalize">
+      <Button
+        size="lg"
+        className="gap-2 capitalize shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all"
+        data-aos="fade-up"
+        data-aos-delay="150"
+      >
         mulai ujian
         <ArrowRight className="w-4 aspect-square mt-0.5" />
       </Button>
@@ -37,6 +56,8 @@ const Hero = () => {
           className={cn(
             "w-max h-full p-8 pb-10 bg-white/10 shadow-box dark:shadow-boxDark rounded-[30px] flex flex-col gap-6"
           )}
+          data-aos="fade-up"
+          data-aos-delay="200"
         >
           <div className="flex items-center gap-3">
             <span className="w-[18.74px] aspect-square rounded-full bg-[#FC1F6F]" />
