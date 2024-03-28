@@ -75,3 +75,7 @@
 body {
   @apply bg-background text-foreground;
 }
+
+.border-bottom {
+  @apply border-x-0 border-t-0 border-b rounded-none focus-visible:ring-0 focus-visible:ring-transparent focus:border-primary
+}
