@@ -6,7 +6,14 @@ import { useState, useEffect, FormEvent, ChangeEvent } from "react"
 import axios from "axios"
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
-import { CalendarIcon, PlusCircle, Trash2Icon, X } from "lucide-react"
+import {
+  CalendarIcon,
+  PlusCircle,
+  Trash2Icon,
+  X,
+  FileText,
+  BookOpen,
+} from "lucide-react"
 import { Card } from "./ui/card"
 import { useToast } from "./ui/use-toast"
 import { useMutation } from "@tanstack/react-query"
@@ -27,6 +34,14 @@ import { Calendar } from "./ui/calendar"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import CustomTooltip from "./custom-tooltip"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function ExamFormPost() {
   const { toast } = useToast()
@@ -139,7 +154,8 @@ export default function ExamFormPost() {
     "border-x-0 border-t-0 border-b rounded-none focus-visible:ring-0 focus-visible:ring-transparent focus:border-primary p-0"
 
   return (
-    <div className="max-w-3xl w-full mx-auto mb-20">
+    <>
+    <div className="max-w-3xl w-full mx-auto mb-32">
       <form onSubmit={onSubmit} className="w-full">
         <Card className="flex flex-col gap-6 p-6 relative overflow-hidden">
           <span className="absolute w-full h-2 top-0 bg-primary left-0" />
@@ -212,11 +228,14 @@ export default function ExamFormPost() {
             </Popover>
           </div>
         </Card>
-        <div className="w-full flex items-center justify-end my-8">
+        <div className="w-full my-8 flex items-center justify-center">
+          <span className="w-10 h-[2px] bg-primary rounded-full" />
+        </div>
+        {/* <div className="w-full flex items-center justify-end my-8">
           <Button type="button" onClick={handleAddQuestion}>
             Add Question <PlusCircle className="size-4 ml-2" />
           </Button>
-        </div>
+        </div> */}
         {/* question */}
         {questions.map((question, questionIndex) => (
           <Card key={questionIndex} className="w-full flex flex-col mb-4">
@@ -275,9 +294,8 @@ export default function ExamFormPost() {
                 required
                 className="h-12"
               />
-              <div className="w-full py-4 flex items-center justify-center">
-                <span className="h-px bg-muted-foreground w-20" />
-              </div>
+
+              <div className="w-full py-3" />
 
               {/* answer options */}
               {question.options.map((option, optionIndex) => (
@@ -332,16 +350,65 @@ export default function ExamFormPost() {
           </Card>
         ))}
 
-        <br />
-        <LoadingButton
-          className="w-full"
-          loading={isPending}
-          disabled={isPending || questions.length < 2}
-          type="submit"
-        >
-          Create Exam
-        </LoadingButton>
+        <Card className="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 p-4 w-max">
+          <CustomTooltip message="tambah pertanyaan">
+            <Button
+              className="capitalize"
+              type="button"
+              variant="outline"
+              onClick={handleAddQuestion}
+            >
+              pertanyaan <PlusCircle className="size-4 ml-2" />
+            </Button>
+          </CustomTooltip>
+          <LoadingButton
+            className="w-full capitalize shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all"
+            loading={isPending}
+            disabled={isPending || questions.length < 5}
+            type="submit"
+          >
+            buat ujian <FileText className="size-4 ml-2" />
+          </LoadingButton>
+        </Card>
       </form>
     </div>
+    <Guide />
+    </>
+    
+  )
+}
+
+const Guide = () => {
+  return (
+    <Dialog>
+        <CustomTooltip message="panduan">
+      <DialogTrigger asChild>
+        <Button
+          variant="ghost"
+          type="button"
+          className="fixed bottom-6 right-8 rounded-full p-1"
+          size="icon"
+        >
+          <BookOpen className="size-5 cursor-pointer" />
+        </Button>
+      </DialogTrigger>
+        </CustomTooltip>
+      <DialogContent className="max-w-xl">
+        <DialogHeader>
+          <DialogTitle>Panduan ketika membuat soal</DialogTitle>
+        </DialogHeader>
+        <ul className="list-disc pl-4 text-muted-foreground">
+          <li>buat total total poin menjadi 100.</li>
+          <li>buat soal minimal 5 agar ujian bisa di submit.</li>
+          <li>
+            untuk sekarang hati-hati ketika ingin refresh, karena ketika di
+            refresh soalnya akan ke reset.
+          </li>
+          <li>
+            tentukan opsinya benar dengan mencentang ckeckbox, centang 1 saja.
+          </li>
+        </ul>
+      </DialogContent>
+    </Dialog>
   )
 }
