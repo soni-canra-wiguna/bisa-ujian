@@ -81,7 +81,12 @@ const Leaderboard = ({ exam, isPending, isError }: ExamType) => {
                   const indexFromOne = index + 1
                   const formatDate = format(createdAt, "dd/MM/yyyy")
                   return (
-                    <tr key={indexFromOne} className="">
+                    <tr
+                      key={indexFromOne}
+                      className={`${
+                        indexFromOne % 2 === 0 && "bg-muted-foreground/10"
+                      }`}
+                    >
                       <td
                         scope="col"
                         className="border p-4 text-center font-grostekNormal relative"
