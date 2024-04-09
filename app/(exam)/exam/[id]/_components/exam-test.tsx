@@ -213,6 +213,7 @@ const ExamTest = ({ exam, isPending, isError, id }: ExamTestProps) => {
                         <div className="flex flex-col gap-3">
                           {options?.map(({ content }, optionIndex) => (
                             <ExamOption
+                              key={optionIndex}
                               activeOptions={activeOptions}
                               correctAnswer={correctAnswer}
                               optionIndex={optionIndex}
@@ -393,7 +394,6 @@ const ExamOption = ({
 }: ExamOptionsProps) => {
   return (
     <div
-      key={optionIndex}
       className={`flex justify-between items-center p-2 rounded-md ${
         activeOptions[questionIndex] === optionIndex && "bg-primary/10"
       }`}
