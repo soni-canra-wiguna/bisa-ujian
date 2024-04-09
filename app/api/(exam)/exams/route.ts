@@ -1,6 +1,7 @@
 import prisma from "@/lib/prismadb"
 import { ExamProps } from "@/type"
 import { NextRequest, NextResponse } from "next/server"
+import * as z from "zod"
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,16 +15,18 @@ export async function POST(req: NextRequest) {
         description,
         classroom,
         questions: {
-          create: questions.map(({ content, points, options }) => ({
-            content,
-            points,
-            options: {
-              create: options.map(({ content, isCorrectAnswer }) => ({
-                content,
-                isCorrectAnswer,
-              })),
-            },
-          })),
+          create: questions.map(
+            ({ content, points, correctAnswer, options }) => ({
+              content,
+              points,
+              correctAnswer,
+              options: {
+                create: options.map(({ content }) => ({
+                  content,
+                })),
+              },
+            })
+          ),
         },
       },
       include: {
@@ -52,14 +55,12 @@ export async function GET(req: NextRequest) {
   try {
     const exams = await prisma.exam.findMany({
       include: {
+        resultsExam: true,
         questions: {
           include: {
             options: true,
           },
         },
-      },
-      orderBy: {
-        createdAt: "desc",
       },
     })
 
@@ -71,6 +72,13 @@ export async function GET(req: NextRequest) {
         where: {
           title: {
             contains: decodeQuery,
+          },
+        },
+        include: {
+          questions: {
+            include: {
+              options: true,
+            },
           },
         },
       })
@@ -95,6 +103,7 @@ export async function GET(req: NextRequest) {
       }
     }
   } catch (error) {
+    console.log(error)
     return NextResponse.json({
       message: "failed to fetch data, see your connection",
       status: 500,

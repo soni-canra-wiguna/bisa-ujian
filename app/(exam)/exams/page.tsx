@@ -1,15 +1,19 @@
-import { CreateExamDialog, ListExam } from "@/components/exam-comp"
-import ExamFormPost from "@/components/exam-form"
+import { ListExam } from "@/components/exam-comp"
 import MaxWidthWrapper from "@/components/max-width-wrapper"
+import { GlowCapture, Glow } from "@codaworks/react-glow"
+import {Card} from "@/components/ui/card"
 
 const ExamsPage = () => {
   return (
-    <MaxWidthWrapper className="pt-5 flex flex-col gap-10">
-      {/* <div className="w-full flex items-center justify-end">
-        <CreateExamDialog />
-      </div>
-      <ListExam /> */}
-      <ExamFormPost />
+    <MaxWidthWrapper className="pt-5">
+      <ListExam />
+      {/* <GlowCapture>
+        <Glow color="hsl(338.69 100% 48.04%)">
+          <Card className="w-[400px] aspect-video cursor-pointer glow:bg-orange-400/10">
+            This will glow pink when the mouse is passed over
+          </Card>
+        </Glow>
+      </GlowCapture> */}
     </MaxWidthWrapper>
   )
 }

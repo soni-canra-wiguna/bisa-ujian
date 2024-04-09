@@ -1,4 +1,5 @@
 import MaxWidthWrapper from "@/components/max-width-wrapper"
+import GoToExam from "@/components/go-to-exam"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import Image from "next/image"
@@ -32,17 +33,7 @@ export default function Home() {
           Sebuah flatform yang di gunakan untuk mempermudah siswa/i dalam
           melakukan ujian.
         </p>
-        <Link href="/exams">
-          <Button
-            size="lg"
-            className="gap-2 capitalize shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all"
-            data-aos="fade-up"
-            data-aos-delay="150"
-          >
-            mulai ujian
-            <ArrowRight className="w-4 aspect-square mt-0.5" />
-          </Button>
-        </Link>
+        <GoToExam />
         <DemoApp />
       </div>
     </MaxWidthWrapper>
@@ -54,7 +45,7 @@ const DemoApp = () => {
     <div className="pt-[150px] flex justify-center">
       <div
         className={cn(
-          "w-max h-full p-8 pb-10 bg-white/10 shadow-box dark:shadow-boxDark rounded-[30px] flex flex-col gap-6"
+          "w-max h-full p-8 pb-10 bg-white/10 shadow-box dark:shadow-boxDark rounded-[30px] flex flex-col gap-6 border"
         )}
         data-aos="fade-up"
         data-aos-delay="200"

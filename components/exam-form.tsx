@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 "use client"
 
 import { useState, useEffect, FormEvent, ChangeEvent } from "react"
@@ -37,7 +35,6 @@ import CustomTooltip from "./custom-tooltip"
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -57,11 +54,12 @@ export default function ExamFormPost() {
       {
         content: "",
         points: "10",
-        options: [{ content: "", isCorrectAnswer: false }],
+        correctAnswer: "",
+        options: [{ content: "" }],
       },
     ]
   )
-  const [dateSelected, setDateSelected] = useState<Date>()
+  const [dateSelected, setDateSelected] = useState<Date | null>()
 
   // useEffect(() => {
   //   localStorage.setItem("title", title)
@@ -74,7 +72,8 @@ export default function ExamFormPost() {
       {
         content: "",
         points: "10",
-        options: [{ content: "", isCorrectAnswer: false }],
+        correctAnswer: "",
+        options: [{ content: "" }],
       },
     ])
   }
@@ -91,7 +90,6 @@ export default function ExamFormPost() {
     const newQuestions = [...questions]
     newQuestions[questionIndex].options.push({
       content: "",
-      isCorrectAnswer: false,
     })
     setQuestions(newQuestions)
   }
@@ -100,6 +98,20 @@ export default function ExamFormPost() {
     const newQuestions = [...questions]
     newQuestions[questionIndex].options.splice(optionIndex, 1)
     setQuestions(newQuestions)
+  }
+
+  const handleSelectCorrectOption = (
+    questionIndex: number,
+    option: {
+      content: string
+    }
+  ) => {
+    const newOptions = [...questions]
+    const selectedOptionContent = option.content
+    if (newOptions[questionIndex].correctAnswer !== selectedOptionContent) {
+      newOptions[questionIndex].correctAnswer = selectedOptionContent
+    }
+    setQuestions(newOptions)
   }
 
   const { mutate, isPending } = useMutation({
@@ -119,9 +131,14 @@ export default function ExamFormPost() {
       setTitle("")
       setDescription("")
       setClassroom("")
-      setDateSelected(Date | undefined)
+      setDateSelected(undefined)
       setQuestions([
-        { content: "", options: [{ content: "", isCorrectAnswer: false }] },
+        {
+          content: "",
+          points: "10",
+          correctAnswer: "",
+          options: [{ content: "" }],
+        },
       ])
       // localStorage.removeItem("title")
       // localStorage.removeItem("questions")
@@ -130,7 +147,7 @@ export default function ExamFormPost() {
       toast({
         title: "gagal ditambahkan.",
         description: "ujian gagal di tambahkan!!",
-        variant: "destruction",
+        variant: "destructive",
       })
     },
   })
@@ -138,6 +155,13 @@ export default function ExamFormPost() {
   const onSubmit = (e: FormEvent) => {
     e.preventDefault()
     try {
+      // console.log({
+      //   title,
+      //   description,
+      //   date: dateSelected,
+      //   classroom,
+      //   questions,
+      // })
       mutate({
         title,
         description,
@@ -155,250 +179,276 @@ export default function ExamFormPost() {
 
   return (
     <>
-    <div className="max-w-3xl w-full mx-auto mb-32">
-      <form onSubmit={onSubmit} className="w-full">
-        <Card className="flex flex-col gap-6 p-6 relative overflow-hidden">
-          <span className="absolute w-full h-2 top-0 bg-primary left-0" />
-          <Input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            placeholder="Judul ujian"
-            className={cn("h-12 text-xl font-medium", borderBottom)}
-          />
-          <Input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-            placeholder="deskripsi ujian"
-            className={cn("", borderBottom)}
-          />
-          <div className="flex flex-row w-full h-full items-center justify-between my-4">
-            <Select onValueChange={(value) => setClassroom(value)}>
-              <SelectTrigger className="flex-1">
-                <SelectValue placeholder="kelas" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {inputOptions.classrooms.map((value) => (
-                    <SelectItem className="uppercase" key={value} value={value}>
-                      {value}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+      <div className="max-w-2xl w-full mx-auto mb-32">
+        <form onSubmit={onSubmit} className="w-full">
+          <Card className="flex flex-col gap-6 p-6 relative overflow-hidden">
+            <span className="absolute w-full h-2 top-0 bg-primary left-0" />
+            <Input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              placeholder="Judul ujian"
+              className={cn("h-12 text-xl font-medium", borderBottom)}
+            />
+            <Input
+              type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+              placeholder="deskripsi ujian"
+              className={cn("", borderBottom)}
+            />
+            <div className="flex flex-row w-full h-full items-center justify-between my-4">
+              <Select onValueChange={(value) => setClassroom(value)}>
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="kelas" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {inputOptions.classrooms.map((value) => (
+                      <SelectItem
+                        className="uppercase"
+                        key={value}
+                        value={value}
+                      >
+                        {value}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
 
-            <span className="w-[2px] h-5 bg-muted border-none mx-4" />
+              <span className="w-[2px] h-5 bg-muted border-none mx-4" />
 
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "pl-3 text-left font-normal flex-1 w-full",
-                    !dateSelected && "text-muted-foreground"
-                  )}
-                >
-                  {dateSelected ? (
-                    format(dateSelected, "dd MMMM yyyy", { locale: id })
-                  ) : (
-                    <span>tanggal ujian</span>
-                  )}
-                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="end">
-                <Calendar
-                  mode="single"
-                  selected={dateSelected}
-                  onSelect={setDateSelected}
-                  // disabled={(date) => {
-                  //   const today = new Date()
-                  //   const nextWeek = new Date(today)
-                  //   nextWeek.setDate(today.getDate() + 7)
-
-                  //   return date < new Date() || date > nextWeek
-                  // }}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-        </Card>
-        <div className="w-full my-8 flex items-center justify-center">
-          <span className="w-10 h-[2px] bg-primary rounded-full" />
-        </div>
-        {/* <div className="w-full flex items-center justify-end my-8">
-          <Button type="button" onClick={handleAddQuestion}>
-            Add Question <PlusCircle className="size-4 ml-2" />
-          </Button>
-        </div> */}
-        {/* question */}
-        {questions.map((question, questionIndex) => (
-          <Card key={questionIndex} className="w-full flex flex-col mb-4">
-            <div className="w-full items-center justify-end py-2 flex border-b px-6 mb-4 rounded-t-xl">
-              <div className="flex items-center gap-4">
-                <Select
-                  defaultValue={questions[questionIndex]?.points?.toString()}
-                  onValueChange={(value) => {
-                    const newQuestions = [...questions]
-                    newQuestions[questionIndex].points = value
-                    setQuestions(newQuestions)
-                  }}
-                >
-                  <CustomTooltip message="poin soal" side="left">
-                    <SelectTrigger className="flex-1">
-                      <SelectValue placeholder="point" />
-                    </SelectTrigger>
-                  </CustomTooltip>
-                  <SelectContent>
-                    <SelectGroup>
-                      {inputOptions.points.map((value) => (
-                        <SelectItem
-                          key={value.toString()}
-                          value={value.toString()}
-                        >
-                          {value}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                {/* select point */}
-                <CustomTooltip message="hapus soal">
+              <Popover>
+                <PopoverTrigger asChild>
                   <Button
-                    variant="ghost"
-                    size="icon"
-                    type="button"
-                    onClick={() => handleDeleteQuestion(questionIndex)}
-                    className="p-[0.01px]"
+                    variant={"outline"}
+                    className={cn(
+                      "pl-3 text-left font-normal flex-1 w-full",
+                      !dateSelected && "text-muted-foreground"
+                    )}
                   >
-                    <Trash2Icon className="w-4 h-4 xt-muted-foreground" />
+                    {dateSelected ? (
+                      format(dateSelected, "dd MMMM yyyy", { locale: id })
+                    ) : (
+                      <span>tanggal ujian</span>
+                    )}
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                   </Button>
-                </CustomTooltip>
-              </div>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="end">
+                  <Calendar
+                    mode="single"
+                    // @ts-ignore
+                    selected={dateSelected}
+                    onSelect={setDateSelected}
+                    disabled={(date) => {
+                      const today = new Date()
+                      const isToday = new Date(today)
+                      isToday.setDate(today.getDate() - 1)
+                      return date < isToday
+                    }}
+                    // disabled={(date) => {
+                    //   const today = new Date()
+                    //   const nextWeek = new Date(today)
+                    //   nextWeek.setDate(today.getDate() + 7)
+
+                    //   return date < new Date() || date > nextWeek
+                    // }}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
-            <div className="flex flex-col p-6 w-full gap-4">
-              <Input
-                type="text"
-                placeholder="pertanyaan"
-                value={question.content}
-                onChange={(e) => {
-                  const newQuestions = [...questions]
-                  newQuestions[questionIndex].content = e.target.value
-                  setQuestions(newQuestions)
-                }}
-                required
-                className="h-12"
-              />
-
-              <div className="w-full py-3" />
-
-              {/* answer options */}
-              {question.options.map((option, optionIndex) => (
-                <div key={optionIndex} className="flex gap-4 items-center mb-3">
-                  <Input
-                    type="text"
-                    placeholder={`opsi ${optionIndex + 1}`}
-                    value={option.content}
-                    onChange={(e) => {
+          </Card>
+          <div className="w-full my-8 flex items-center justify-center">
+            <span className="w-10 h-[2px] bg-primary rounded-full" />
+          </div>
+          {/* question */}
+          {questions.map((question, questionIndex) => (
+            <Card key={questionIndex} className="w-full flex flex-col mb-4">
+              <div className="w-full items-center justify-end py-2 flex border-b px-6 mb-4 rounded-t-xl">
+                <div className="flex items-center gap-4">
+                  <Select
+                    defaultValue={questions[questionIndex]?.points?.toString()}
+                    onValueChange={(value) => {
                       const newQuestions = [...questions]
-                      newQuestions[questionIndex].options[optionIndex].content =
-                        e.target.value
+                      newQuestions[questionIndex].points = value
                       setQuestions(newQuestions)
                     }}
-                    required
-                    className={cn("flex-1", borderBottom)}
-                  />
-                  <Input
-                    type="checkbox"
-                    checked={option.isCorrectAnswer}
-                    onChange={(e) => {
-                      const newQuestions = [...questions]
-                      newQuestions[questionIndex].options[
-                        optionIndex
-                      ].isCorrectAnswer = e.target.checked
-                      setQuestions(newQuestions)
-                    }}
-                    className="w-max shadow-none"
-                  />
-                  <CustomTooltip message="hapus opsi">
+                  >
+                    <CustomTooltip message="poin soal" side="left">
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="point" />
+                      </SelectTrigger>
+                    </CustomTooltip>
+                    <SelectContent>
+                      <SelectGroup>
+                        {inputOptions.points.map((value) => (
+                          <SelectItem
+                            key={value.toString()}
+                            value={value.toString()}
+                          >
+                            {value}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  {/* select point */}
+                  <CustomTooltip message="hapus soal">
                     <Button
                       variant="ghost"
                       size="icon"
                       type="button"
-                      onClick={() =>
-                        handleDeleteOption(questionIndex, optionIndex)
-                      }
-                      className=""
+                      onClick={() => handleDeleteQuestion(questionIndex)}
+                      className="p-[0.01px]"
                     >
-                      <X className="w-4 h-4 text-muted-foreground" />
+                      <Trash2Icon className="w-4 h-4 xt-muted-foreground" />
                     </Button>
                   </CustomTooltip>
                 </div>
-              ))}
-              <p
-                className="cursor-pointer underline underline-offset-4 text-sm text-muted-foreground w-max"
-                onClick={() => handleAddOption(questionIndex)}
-              >
-                tambahkan opsi
-              </p>
-            </div>
-          </Card>
-        ))}
+              </div>
+              <div className="flex flex-col p-6 w-full gap-4">
+                <Input
+                  type="text"
+                  placeholder="pertanyaan"
+                  value={question.content}
+                  onChange={(e) => {
+                    const newQuestions = [...questions]
+                    newQuestions[questionIndex].content = e.target.value
+                    setQuestions(newQuestions)
+                  }}
+                  required
+                  className="h-12"
+                />
 
-        <Card className="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 p-4 w-max">
-          <CustomTooltip message="tambah pertanyaan">
-            <Button
-              className="capitalize"
-              type="button"
-              variant="outline"
-              onClick={handleAddQuestion}
+                <div className="w-full py-3" />
+
+                {/* answer options */}
+                {question.options.map((option, optionIndex) => {
+                  return (
+                    <div
+                      key={optionIndex}
+                      className="flex gap-4 items-center mb-3"
+                    >
+                      <CustomTooltip message="select option">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleSelectCorrectOption(questionIndex, option)
+                          }
+                          // onClick={() => {
+                          //   const newOptions = [...questions]
+                          //   const selectedOptionContent = option.content
+                          //   if (
+                          //     newOptions[questionIndex].correctAnswer !==
+                          //     selectedOptionContent
+                          //   ) {
+                          //     newOptions[questionIndex].correctAnswer =
+                          //       selectedOptionContent
+                          //   }
+                          //   setQuestions(newOptions)
+                          // }}
+                          className="cursor-pointer relative border-2 rounded-full w-6 h-6"
+                        >
+                          {questions[questionIndex].correctAnswer ===
+                            option.content &&
+                            questions[questionIndex].correctAnswer !== "" && (
+                              <span className="absolute w-3 h-3 bg-primary rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                            )}
+                        </button>
+                      </CustomTooltip>
+                      <Input
+                        type="text"
+                        placeholder={`opsi ${optionIndex + 1}`}
+                        value={option.content}
+                        onChange={(e) => {
+                          const newOptions = [...questions]
+                          newOptions[questionIndex].options[
+                            optionIndex
+                          ].content = e.target.value
+                          setQuestions(newOptions)
+                        }}
+                        required
+                        className={cn("flex-1", borderBottom)}
+                      />
+                      <CustomTooltip message="hapus opsi">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          type="button"
+                          onClick={() =>
+                            handleDeleteOption(questionIndex, optionIndex)
+                          }
+                          className=""
+                        >
+                          <X className="w-4 h-4 text-muted-foreground" />
+                        </Button>
+                      </CustomTooltip>
+                    </div>
+                  )
+                })}
+                <p
+                  className="cursor-pointer underline underline-offset-4 text-sm text-muted-foreground w-max selection:bg-transparent"
+                  onClick={() => handleAddOption(questionIndex)}
+                >
+                  tambahkan opsi
+                </p>
+              </div>
+            </Card>
+          ))}
+
+          <Card className="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 p-4 w-max">
+            <CustomTooltip message="tambah pertanyaan">
+              <Button
+                className="capitalize"
+                type="button"
+                variant="outline"
+                onClick={handleAddQuestion}
+              >
+                pertanyaan <PlusCircle className="size-4 ml-2" />
+              </Button>
+            </CustomTooltip>
+            <LoadingButton
+              className="w-full capitalize shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all"
+              loading={isPending}
+              disabled={isPending || questions.length < 5}
+              type="submit"
             >
-              pertanyaan <PlusCircle className="size-4 ml-2" />
-            </Button>
-          </CustomTooltip>
-          <LoadingButton
-            className="w-full capitalize shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all"
-            loading={isPending}
-            disabled={isPending || questions.length < 5}
-            type="submit"
-          >
-            buat ujian <FileText className="size-4 ml-2" />
-          </LoadingButton>
-        </Card>
-      </form>
-    </div>
-    <Guide />
+              buat ujian <FileText className="size-4 ml-2" />
+            </LoadingButton>
+          </Card>
+        </form>
+      </div>
+      <Guide />
     </>
-    
   )
 }
 
 const Guide = () => {
   return (
     <Dialog>
-        <CustomTooltip message="panduan">
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          type="button"
-          className="fixed bottom-6 right-8 rounded-full p-1"
-          size="icon"
-        >
-          <BookOpen className="size-5 cursor-pointer" />
-        </Button>
-      </DialogTrigger>
-        </CustomTooltip>
+      <CustomTooltip message="panduan">
+        <DialogTrigger asChild>
+          <Button
+            variant="ghost"
+            type="button"
+            className="fixed bottom-6 right-8 rounded-full p-1"
+            size="icon"
+          >
+            <BookOpen className="size-5 cursor-pointer" />
+          </Button>
+        </DialogTrigger>
+      </CustomTooltip>
       <DialogContent className="max-w-xl">
         <DialogHeader>
           <DialogTitle>Panduan ketika membuat soal</DialogTitle>
         </DialogHeader>
         <ul className="list-disc pl-4 text-muted-foreground">
-          <li>buat total total poin menjadi 100.</li>
+          <li>buat total poin menjadi 100.</li>
           <li>buat soal minimal 5 agar ujian bisa di submit.</li>
           <li>
             untuk sekarang hati-hati ketika ingin refresh, karena ketika di

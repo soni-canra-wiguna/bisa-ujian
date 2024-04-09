@@ -1,7 +1,8 @@
 "use client"
 
+import { ExamProps } from "@/type"
 // single responsibility principle
-import type { Exam } from "@prisma/client"
+import type { Answer, Exam, Question } from "@prisma/client"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 
@@ -23,3 +24,20 @@ const useExamsData = () => {
 }
 
 export default useExamsData
+
+export const useExamData = (id?: string) => {
+  const {
+    data: exam,
+    isPending,
+    isError,
+    isLoading,
+  } = useQuery<ExamProps>({
+    queryKey: ["singleExamData"],
+    queryFn: async () => {
+      const { data } = await axios.get(`/api/exams/${id}`)
+      return data.exam
+    },
+  })
+
+  return { exam, isPending, isError, isLoading }
+}

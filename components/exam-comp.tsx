@@ -58,6 +58,7 @@ import {
   CardDescription,
 } from "./ui/card"
 import { Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export const CreateExamDialog = () => {
   const [isOpenDialog, setIsOpenDialog] = useState<boolean>(false)
@@ -283,13 +284,14 @@ const FormExam = ({ closeDialog }: { closeDialog: () => void }) => {
 
 export const ListExam = () => {
   const { exams, isPending, isError } = useExamsData()
+  const router = useRouter()
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
       {isPending ? (
         <p data-aos="fade-up" data-aos-delay="150">
           loading <Loader2 className="ml-2 h-4 w-4 animate-spin" />
         </p>
-      ) : (
+      ) : !isError ? (
         exams?.map((exam) => (
           <ExamCard
             key={exam.id}
@@ -300,6 +302,13 @@ export const ListExam = () => {
             date={exam.date}
           />
         ))
+      ) : (
+        <div className="flex flex-col gap-3 items-center justify-center w-full">
+          <p>waduh error nih, coba refresh lagi deh...</p>
+          <Button variant="outline" onClick={() => router.refresh()}>
+            refresh
+          </Button>
+        </div>
       )}
     </div>
   )
