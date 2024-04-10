@@ -32,7 +32,7 @@ export const useExamData = (id?: string) => {
     isError,
     isLoading,
   } = useQuery<ExamProps>({
-    queryKey: ["singleExamData"],
+    queryKey: ["singleExamData", id],
     queryFn: async () => {
       const { data } = await axios.get(`/api/exams/${id}`)
       return data.exam
