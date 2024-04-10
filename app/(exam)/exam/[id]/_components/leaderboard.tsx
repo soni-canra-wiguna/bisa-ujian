@@ -9,6 +9,27 @@ import { format } from "date-fns"
 import { SecondsToTimeMinutes } from "@/lib/seconds-to-time"
 
 const Leaderboard = ({ exam, isPending, isError }: ExamType) => {
+  const sortDataByCorrectAnswerAndTimeRemainings = exam?.resultsExam?.sort(
+    // @ts-ignore
+    (a, b) => {
+      if (a.correctAnswer > b.correctAnswer) return -1
+      if (a.correctAnswer < b.correctAnswer) return 1
+      if (
+        a.correctAnswer === b.correctAnswer &&
+        a.timeRemainings < b.timeRemainings
+      ) {
+        // di compare time remaining pake <, semakin kecil data maka data akan ada di atas
+        return -1
+      }
+      if (
+        a.correctAnswer === b.correctAnswer &&
+        a.timeRemainings > b.timeRemainings
+      ) {
+        return 1
+      }
+    }
+  )
+
   return (
     <>
       {isPending ? (
@@ -63,7 +84,7 @@ const Leaderboard = ({ exam, isPending, isError }: ExamType) => {
               </tr>
             </thead>
             <tbody>
-              {exam?.resultsExam?.map(
+              {sortDataByCorrectAnswerAndTimeRemainings?.map(
                 (
                   {
                     name,
