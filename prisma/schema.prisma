@@ -7,6 +7,59 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+enum Role {
+  student
+  teacher
+  admin
+}
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  username      String
+  email         String    @unique
+  password      String
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(student)
+  accounts      Account[]
+  sessions      Session[]
+  exams         Exam[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
 model Exam {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   title       String
@@ -15,9 +68,10 @@ model Exam {
   date        DateTime?
   questions   Question[]
   resultsExam Result[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   @@map("exams")
 }
@@ -28,17 +82,15 @@ model Question {
   points        String
   correctAnswer String
   options       Answer[]
-
-  examId String
-  exam   Exam   @relation(fields: [examId], references: [id], onDelete: Cascade)
+  examId        String
+  exam          Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
 
   @@map("questions")
 }
 
 model Answer {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  content String
-
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  content    String
   questionId String
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
@@ -46,7 +98,7 @@ model Answer {
 }
 
 model Result {
-  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
   name           String
   classroom      String
   noAbsen        Int
@@ -54,12 +106,10 @@ model Result {
   correctAnswer  Int
   totalQuestion  Int
   timeRemainings Int
-
-  examId String
-  exam   Exam   @relation(fields: [examId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  examId         String
+  exam           Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@map("resultsExam")
 }

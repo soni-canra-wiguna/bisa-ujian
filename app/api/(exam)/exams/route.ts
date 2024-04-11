@@ -6,7 +6,14 @@ import * as z from "zod"
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { title, date, description, classroom, questions }: ExamProps = body
+    const {
+      title,
+      date,
+      description,
+      classroom,
+      questions,
+      userId,
+    }: ExamProps = body
 
     await prisma.exam.create({
       data: {
@@ -28,6 +35,7 @@ export async function POST(req: NextRequest) {
             })
           ),
         },
+        user: { connect: { id: userId } },
       },
       include: {
         questions: {

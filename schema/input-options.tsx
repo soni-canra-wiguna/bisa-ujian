@@ -1,4 +1,5 @@
 export const inputOptions = {
+  role: ["admin", "teacher", "student"],
   classrooms: [
     "all",
     "x",

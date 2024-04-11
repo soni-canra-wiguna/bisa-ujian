@@ -5,8 +5,10 @@ import { ExamProps } from "@/type"
 import type { Answer, Exam, Question } from "@prisma/client"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
+import { useUserClient } from "./use-user"
 
 const useExamsData = () => {
+  const session = useUserClient()
   const {
     data: exams,
     isPending,
@@ -15,8 +17,8 @@ const useExamsData = () => {
   } = useQuery<Exam[]>({
     queryKey: ["examsData"],
     queryFn: async () => {
-      const { data } = await axios.get("/api/exams")
-      return data.exams
+      const { data } = await axios.get(`/api/register/${session?.user.id}`)
+      return data.user.exams
     },
   })
 

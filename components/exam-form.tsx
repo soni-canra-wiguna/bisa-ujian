@@ -39,8 +39,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { useUserClient } from "@/hook/use-user"
 
 export default function ExamFormPost() {
+  const session = useUserClient()
   const { toast } = useToast()
   const [title, setTitle] = useState(
     // localStorage.getItem("title") ||
@@ -163,6 +165,7 @@ export default function ExamFormPost() {
       //   questions,
       // })
       mutate({
+        userId: session?.user.id,
         title,
         description,
         date: dateSelected,

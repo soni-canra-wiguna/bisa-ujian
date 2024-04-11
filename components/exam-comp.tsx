@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { Button } from "./ui/button"
-import { CalendarIcon, PlusCircle } from "lucide-react"
+import { CalendarIcon, Check, Copy, PlusCircle } from "lucide-react"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -59,6 +59,7 @@ import {
 } from "./ui/card"
 import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
+import CustomTooltip from "@/components/custom-tooltip"
 
 export const CreateExamDialog = () => {
   const [isOpenDialog, setIsOpenDialog] = useState<boolean>(false)
@@ -329,16 +330,41 @@ export const ExamCard = ({
   classroom,
   date,
 }: ExamCardProps) => {
+  const [copyStatus, setCopyStatus] = useState<boolean>(false)
   //date -> 2024-04-01T17:00:00.000Z
   if (date === null) return
   const formatDate = format(date, "d MMMM yyyy")
 
+  const copyText = (id: string) => {
+    navigator.clipboard.writeText(id)
+    setCopyStatus(true)
+
+    setTimeout(() => {
+      setCopyStatus(false)
+    }, 2500)
+  }
+
   return (
-    <Link href={`/exam/${id}`} data-aos="fade-right" data-aos-delay="150">
+    <div>
       <article>
         <Card className="hover:ring-primary/30 hover:ring-2">
           <CardHeader>
-            <CardTitle>{title}</CardTitle>
+            <div className="flex justify-between items-center">
+              <CardTitle>{title}</CardTitle>
+              <CustomTooltip message={copyStatus ? "copied!": "copy"}>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => copyText(id)}
+              >
+                {copyStatus ? (
+                  <Check className="size-3.5" />
+                ) : (
+                  <Copy className="size-3.5" />
+                )}
+              </Button>
+            </CustomTooltip> 
+            </div>
             <CardDescription>{description}</CardDescription>
           </CardHeader>
           <CardContent className="grid grid-cols-1 gap-4">
@@ -349,6 +375,6 @@ export const ExamCard = ({
           </CardFooter>
         </Card>
       </article>
-    </Link>
+    </div>
   )
 }
