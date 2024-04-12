@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form"
 import { SignInSchema } from "@/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signIn } from "next-auth/react"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import AuthStatus from "./auth-status"
 import LoadingButton from "@/components/loading-button"
@@ -24,6 +24,7 @@ import FormWrapper from "./form-wrapper"
 
 const SignInForm = () => {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const [isFailedSignIn, setIsFailedSignIn] = useState<boolean>(false)
   const [isSuccesSignIn, setIsSuccesSignIn] = useState<boolean>(false)
   const [isErrorSignIn, setIsErrorSignIn] = useState<boolean>(false)
@@ -49,6 +50,7 @@ const SignInForm = () => {
         setIsSuccesSignIn(true)
         router.refresh()
         router.push("/")
+        queryClient.invalidateQueries({ queryKey: ["examsData"] })
       } else {
         setIsFailedSignIn(true)
       }
@@ -92,10 +94,7 @@ const SignInForm = () => {
                       type="email"
                       focus
                       icon={
-                        <MailIcon
-                          className="absolute top-1/2 transform -translate-y-1/2 w-4 h-4 ml-4"
-                          color="black"
-                        />
+                        <MailIcon className="absolute top-1/2 transform -translate-y-1/2 w-4 h-4 ml-4 text-muted-foreground" />
                       }
                       placeholder="masukkan email anda"
                       {...field}
@@ -117,10 +116,7 @@ const SignInForm = () => {
                     <AuthInput
                       type="password"
                       icon={
-                        <Lock
-                          className="absolute top-1/2 transform -translate-y-1/2 w-4 h-4 ml-4"
-                          color="black"
-                        />
+                        <Lock className="absolute top-1/2 transform -translate-y-1/2 w-4 h-4 ml-4 text-muted-foreground" />
                       }
                       revealPassword
                       placeholder="masukkan password anda"

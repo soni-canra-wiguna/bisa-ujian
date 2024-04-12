@@ -14,7 +14,7 @@ import {
 } from "lucide-react"
 import { Card } from "./ui/card"
 import { useToast } from "./ui/use-toast"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ExamProps } from "@/type"
 import LoadingButton from "./loading-button"
 import { cn } from "@/lib/utils"
@@ -44,6 +44,7 @@ import { useUserClient } from "@/hook/use-user"
 export default function ExamFormPost() {
   const session = useUserClient()
   const { toast } = useToast()
+  const queryClient = useQueryClient()
   const [title, setTitle] = useState(
     // localStorage.getItem("title") ||
     ""
@@ -142,8 +143,7 @@ export default function ExamFormPost() {
           options: [{ content: "" }],
         },
       ])
-      // localStorage.removeItem("title")
-      // localStorage.removeItem("questions")
+      queryClient.invalidateQueries({ queryKey: ["examsData"] })
     },
     onError: () => {
       toast({
