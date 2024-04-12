@@ -2,12 +2,12 @@ import { NextRequestWithAuth, withAuth } from "next-auth/middleware"
 import { NextResponse } from "next/server"
 
 async function middleware(req: NextRequestWithAuth) {
-  const notAdmin = req.nextauth.token?.role !== "admin"
+  const notAdmin = req.nextauth.token?.role !== "teacher"
   const isLogin = req.nextauth.token ? true : false
 
   const dashboardRoutes =
     req.nextUrl.pathname.startsWith("/dashboard") ||
-    req.nextUrl.pathname.startsWith("/dashboard/exam/create") ||
+    req.nextUrl.pathname.startsWith("/dashboard/create-exam") ||
     req.nextUrl.pathname.startsWith("/dashboard/user") ||
     req.nextUrl.pathname.startsWith("/dashboard/user/create")
 
@@ -29,7 +29,7 @@ export default withAuth(middleware, {
 export const config = {
   matcher: [
     "/dashboard",
-    "/dashboard/exam/create",
+    "/dashboard/create-exam",
     "/dashboard/user",
     "/dashboard/user/create",
   ],

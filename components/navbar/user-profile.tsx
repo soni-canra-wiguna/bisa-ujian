@@ -68,11 +68,11 @@ const UserProfile = ({ logout, session }: UserProfileProps) => {
       return (
         <Button className="w-full" variant="ghost">
           <Link
-            href="/e/teacher"
+            href="/dashboard"
             onClick={closePopover}
             className="w-full flex items-center justify-between capitalize"
           >
-            teacher dashboard
+            dashboard
             <ArrowUpRight className="w-4 h-4" strokeWidth={1.5} />
           </Link>
         </Button>

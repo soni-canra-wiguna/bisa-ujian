@@ -35,7 +35,7 @@ const AuthInput = ({
         {...props}
         ref={inputRef}
         className={cn(
-          `rounded-full shadow-none focus-visible:ring-0 border-primary p-5 focus:placeholder:text-transparent ${
+          `rounded-full shadow-none focus:border focus:border-primary border-border p-5 focus:placeholder:text-transparent ${
             icon ? "pl-10" : "pl-6"
           }`,
           revealPassword && "pr-12"
@@ -47,14 +47,12 @@ const AuthInput = ({
         (typePassword === "password" ? (
           <Eye
             onClick={() => setTypePassword("text")}
-            className="absolute top-1/2 transform -translate-y-1/2 w-4 h-4 right-5 cursor-pointer"
-            color="black"
+            className="absolute top-1/2 transform -translate-y-1/2 w-4 h-4 right-5 cursor-pointer text-muted-foreground"
           />
         ) : (
           <EyeOff
             onClick={() => setTypePassword("password")}
-            className="absolute top-1/2 transform -translate-y-1/2 w-4 h-4 right-5 cursor-pointer"
-            color="black"
+            className="absolute top-1/2 transform -translate-y-1/2 w-4 h-4 right-5 cursor-pointer text-muted-foreground"
           />
         ))}
     </div>
