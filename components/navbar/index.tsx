@@ -5,15 +5,28 @@ import { ThemeToggle } from "../theme-toggle"
 import MaxWidthWrapper from "../max-width-wrapper"
 import Link from "next/link"
 import UserProfile from "./user-profile"
-import { handleLogout } from "@/utils/logout"
 import { useUserClient } from "@/hook/use-user"
 import { Button } from "../ui/button"
 import { usePathname, useRouter } from "next/navigation"
 import { disableNavWithFooter } from "@/utils/disable-nav-with-footer"
+import { signOut } from "next-auth/react"
+import { toast } from "@/components/ui/use-toast"
 
 const Navbar = () => {
   const session = useUserClient()
   const pathname = usePathname()
+  const router = useRouter()
+
+  const handleLogout = () => {
+    signOut({ redirect: false }).then(() => {
+      router.push("/")
+  
+      toast({
+        title: "logout succes!!",
+      })
+    })
+  }
+  
 
   return (
     <>
@@ -27,9 +40,10 @@ const Navbar = () => {
             >
               Bisa Ujian
             </Link>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 lg:gap-5">
+              <ThemeToggle />
               {!session ? (
-                <Button variant="link" asChild>
+                <Button asChild>
                   <Link className="capitalize" href="/sign-in">
                     sign in
                   </Link>
@@ -37,7 +51,6 @@ const Navbar = () => {
               ) : (
                 <UserProfile session={session} logout={handleLogout} />
               )}
-              <ThemeToggle />
             </div>
           </div>
         </MaxWidthWrapper>
