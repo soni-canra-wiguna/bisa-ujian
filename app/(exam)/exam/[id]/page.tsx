@@ -4,7 +4,7 @@ import ExamComp from "./_components"
 const ExamPage = ({ params }: { params: { id: string } }) => {
   const { id } = params
   return (
-    <MaxWidthWrapper className="mb-32">
+    <MaxWidthWrapper className="mb-32 min-h-screen">
       <ExamComp id={id} />
     </MaxWidthWrapper>
   )
