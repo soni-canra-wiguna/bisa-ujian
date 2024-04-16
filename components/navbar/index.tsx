@@ -32,7 +32,7 @@ const Navbar = () => {
     <>
       {!disableNavWithFooter.includes(pathname) && (
         <MaxWidthWrapper>
-          <div className="flex items-center justify-between pt-10 pb-20">
+          <div className="flex items-center justify-between pt-6 pb-16 lg:pt-10 lg:pb-20">
             <Link
               href="/"
               className="font-grostekMd font-medium text-lg underline underline-offset-2 decoration-primary -rotate-6"
