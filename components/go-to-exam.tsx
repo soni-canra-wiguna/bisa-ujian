@@ -20,11 +20,12 @@ const GoToExam = () => {
   }, [url])
 
   return (
-    <div className="flex items-center max-w-lg mx-auto w-full gap-4">
+    <div className="flex items-center sm:max-w-sm lg:max-w-md mx-auto w-full gap-4">
       <Input
         value={url}
         placeholder="masukkan key"
         onChange={(e: ChangeEvent<HTMLInputElement>) => setUrl(e.target.value)}
+        className="border-x-0 border-t-0 border-b rounded-none focus-visible:ring-0 focus-visible:ring-transparent focus:border-primary p-0"
       />
       <Button
         disabled={disableButton}
