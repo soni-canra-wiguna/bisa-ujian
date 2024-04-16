@@ -3,6 +3,7 @@ import { EB_Garamond, Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/provider/theme-provider"
 import Navbar from "@/components/navbar"
+import Footer from "@/components/footer"
 import AOSInit from "@/components/aos"
 import TanstackProvider from "@/components/provider/tanstask-provider"
 import NextTopLoader from "nextjs-toploader"
@@ -96,6 +97,7 @@ export default function RootLayout({
               <Navbar />
               <NextTopLoader color="#f97316" height={3} showSpinner={false} />
               <main className="w-full h-full">{children}</main>
+              <Footer />
             </ThemeProvider>
             <Toaster />
           </body>
