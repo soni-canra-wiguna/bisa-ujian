@@ -23,7 +23,17 @@ import axios from "axios"
 import { useToast } from "@/components/ui/use-toast"
 import ResultExam from "./result-exam"
 import { ExamProps } from "@/type"
-import { ExamType } from "./index"
+import { Result } from "@prisma/client"
+
+export interface ExamType {
+  exam:
+    | (ExamProps & {
+        resultsExam?: Result[] | undefined
+      })
+    | undefined
+  isPending: boolean
+  isError: boolean
+}
 
 export interface ExamDataProps {
   name: string
@@ -190,44 +200,51 @@ const ExamTest = ({ exam, isPending, isError, id }: ExamTestProps) => {
               <div className="w-full my-8 flex items-center justify-center">
                 <span className="w-10 h-[2px] bg-primary rounded-full" />
               </div>
-
-              <div className="w-full flex flex-col gap-6">
-                {questions?.map(
-                  (
-                    { content, correctAnswer, points, options },
-                    questionIndex
-                  ) => {
-                    return (
-                      <Card
-                        key={content}
-                        className="w-full p-6 flex flex-col gap-4 overflow-hidden relative"
-                      >
-                        {/* blur effect */}
-                        {!startExam && (
-                          <div className="w-full h-full absolute left-0 top-0 bg-muted-foreground/10 backdrop-blur-lg z-20" />
-                        )}
-                        {/* blur effect */}
-                        <div className="px-4 py-2 mb-3 rounded-md bg-muted">
-                          <h1 className="font-grostekMd text-lg">{content}</h1>
-                        </div>
-                        <div className="flex flex-col gap-3">
-                          {options?.map(({ content }, optionIndex) => (
-                            <ExamOption
-                              key={optionIndex}
-                              activeOptions={activeOptions}
-                              correctAnswer={correctAnswer}
-                              optionIndex={optionIndex}
-                              questionIndex={questionIndex}
-                              content={content}
-                              handleOptionClick={handleOptionClick}
-                            />
-                          ))}
-                        </div>
-                      </Card>
-                    )
-                  }
-                )}
-              </div>
+              {!startExam ? (
+                <Card className="p-6 text-center font-grostekNormal">
+                  Masukkan data kamu dulu yuk!
+                </Card>
+              ) : (
+                <div className="w-full flex flex-col gap-6">
+                  {questions?.map(
+                    (
+                      { content, correctAnswer, points, options },
+                      questionIndex
+                    ) => {
+                      return (
+                        <Card
+                          key={content}
+                          className="w-full p-6 flex flex-col gap-4 overflow-hidden relative"
+                        >
+                          {/* blur effect */}
+                          {!startExam && (
+                            <div className="w-full h-full absolute left-0 top-0 bg-muted-foreground/10 backdrop-blur-lg z-20" />
+                          )}
+                          {/* blur effect */}
+                          <div className="">
+                            <h1 className="font-grostekMd text-lg">
+                              {content}
+                            </h1>
+                          </div>
+                          <div className="flex flex-col gap-3">
+                            {options?.map(({ content }, optionIndex) => (
+                              <ExamOption
+                                key={optionIndex}
+                                activeOptions={activeOptions}
+                                correctAnswer={correctAnswer}
+                                optionIndex={optionIndex}
+                                questionIndex={questionIndex}
+                                content={content}
+                                handleOptionClick={handleOptionClick}
+                              />
+                            ))}
+                          </div>
+                        </Card>
+                      )
+                    }
+                  )}
+                </div>
+              )}
 
               {startExam === true && (
                 <LoadingButton
