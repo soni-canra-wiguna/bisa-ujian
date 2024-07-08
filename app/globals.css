@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -78,4 +77,30 @@ body {
 
 .border-bottom {
   @apply border-x-0 border-t-0 border-b rounded-none focus-visible:ring-0 focus-visible:ring-transparent focus:border-primary
+}
+
+.scrollY::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollY::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.scrollY::-webkit-scrollbar-thumb {
+  background-color: hsla(25, 95%, 53%, 0.303);
+  border-radius: 20px;
+}
+
+.no-before::before,
+.no-after::after {
+content: none;
+}
+
+.custom-highlight {
+@apply bg-primary text-background px-1 py-0.5 rounded-md;
+}
+
+.proseImage {
+@apply flex-1 object-scale-down rounded-md aspect-[16/10];
 }

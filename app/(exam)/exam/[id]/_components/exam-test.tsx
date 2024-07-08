@@ -24,6 +24,8 @@ import { useToast } from "@/components/ui/use-toast"
 import ResultExam from "./result-exam"
 import { ExamProps } from "@/type"
 import { Result } from "@prisma/client"
+import { proseClass } from "@/utils/prose"
+import parse from "html-react-parser"
 
 export interface ExamType {
   exam:
@@ -221,10 +223,8 @@ const ExamTest = ({ exam, isPending, isError, id }: ExamTestProps) => {
                             <div className="w-full h-full absolute left-0 top-0 bg-muted-foreground/10 backdrop-blur-lg z-20" />
                           )}
                           {/* blur effect */}
-                          <div className="">
-                            <h1 className="font-grostekMd text-lg">
-                              {content}
-                            </h1>
+                          <div className="prose prose-headings:text-white prose-p:text-white prose-a:cursor-pointer prose-a:text-primary prose-a:no-underline prose-blockquote:border-s-input prose-strong:text-white prose-pre:bg-input prose-li:text-primary prose-li:marker:text-primary prose-hr:my-[2.5em] prose-hr:border-border">
+                            {parse(content)}
                           </div>
                           <div className="flex flex-col gap-3">
                             {options?.map(({ content }, optionIndex) => (
@@ -432,7 +432,7 @@ const ExamOption = ({
             <span className="absolute w-2.5 h-2.5 bg-primary rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
           )}
         </button>
-        <p className="font-grostekNormal">{content}</p>
+        <p className="font-grostekNormal">{parse(content)}</p>
       </div>
     </div>
   )

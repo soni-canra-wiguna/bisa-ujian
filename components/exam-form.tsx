@@ -40,6 +40,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useUserClient } from "@/hook/use-user"
+import TextEditor from "./text-editor"
+import BubbleEditor from "./text-editor/bubble-editor"
 
 export default function ExamFormPost() {
   const session = useUserClient()
@@ -315,7 +317,7 @@ export default function ExamFormPost() {
                 </div>
               </div>
               <div className="flex flex-col p-6 w-full gap-4">
-                <Input
+                {/* <Input
                   type="text"
                   placeholder="pertanyaan"
                   value={question.content}
@@ -326,8 +328,13 @@ export default function ExamFormPost() {
                   }}
                   required
                   className="h-12"
+                /> */}
+                <TextEditor
+                  questions={questions}
+                  questionIndex={questionIndex}
+                  content={question.content}
+                  setQuestions={setQuestions}
                 />
-
                 <div className="w-full py-3" />
 
                 {/* answer options */}
@@ -364,7 +371,7 @@ export default function ExamFormPost() {
                             )}
                         </button>
                       </CustomTooltip>
-                      <Input
+                      {/* <Input
                         type="text"
                         placeholder={`opsi ${optionIndex + 1}`}
                         value={option.content}
@@ -377,6 +384,15 @@ export default function ExamFormPost() {
                         }}
                         required
                         className={cn("flex-1", borderBottom)}
+                      /> */}
+                      {/* this is input options */}
+                      <BubbleEditor
+                        className="flex-1"
+                        content={option.content}
+                        questions={questions}
+                        setQuestions={setQuestions}
+                        questionIndex={questionIndex}
+                        optionIndex={optionIndex}
                       />
                       <CustomTooltip message="hapus opsi">
                         <Button
