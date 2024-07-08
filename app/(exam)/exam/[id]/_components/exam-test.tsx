@@ -216,14 +216,14 @@ const ExamTest = ({ exam, isPending, isError, id }: ExamTestProps) => {
                       return (
                         <Card
                           key={content}
-                          className="w-full p-6 flex flex-col gap-4 overflow-hidden relative"
+                          className="w-full p-4 md:p-6 flex flex-col gap-4 overflow-hidden relative"
                         >
                           {/* blur effect */}
                           {!startExam && (
                             <div className="w-full h-full absolute left-0 top-0 bg-muted-foreground/10 backdrop-blur-lg z-20" />
                           )}
                           {/* blur effect */}
-                          <div className="prose prose-headings:text-white prose-p:text-white prose-a:cursor-pointer prose-a:text-primary prose-a:no-underline prose-blockquote:border-s-input prose-strong:text-white prose-pre:bg-input prose-li:text-primary prose-li:marker:text-primary prose-hr:my-[2.5em] prose-hr:border-border">
+                          <div className="prose marker:prose prose-headings:text-foreground prose-p:text-foreground prose-a:cursor-pointer prose-a:text-primary prose-a:no-underline prose-blockquote:border-s-input prose-strong:text-foreground prose-pre:bg-input prose-li:text-primary prose-li:marker:text-primary prose-hr:my-[2.5em] prose-hr:border-border">
                             {parse(content)}
                           </div>
                           <div className="flex flex-col gap-3">
@@ -411,7 +411,7 @@ const ExamOption = ({
 }: ExamOptionsProps) => {
   return (
     <div
-      className={`flex justify-between items-center p-2 rounded-md ${
+      className={`flex justify-between items-center py-1 md:py-2 rounded-md ${
         activeOptions[questionIndex] === optionIndex && "bg-primary/10"
       }`}
     >
@@ -432,7 +432,18 @@ const ExamOption = ({
             <span className="absolute w-2.5 h-2.5 bg-primary rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
           )}
         </button>
-        <p className="font-grostekNormal">{parse(content)}</p>
+        <div
+          onClick={() =>
+            handleOptionClick(
+              questionIndex,
+              optionIndex,
+              content === correctAnswer
+            )
+          }
+          className="flex-1 prose marker:prose prose-headings:text-foreground prose-p:text-foreground prose-a:cursor-pointer prose-a:text-primary prose-a:no-underline prose-blockquote:border-s-input prose-strong:text-foreground prose-pre:bg-input prose-li:text-primary prose-li:marker:text-primary prose-hr:my-[2.5em] prose-hr:border-border"
+        >
+          {parse(content)}
+        </div>
       </div>
     </div>
   )
